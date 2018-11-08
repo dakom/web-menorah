@@ -42,12 +42,12 @@
   "license": "MIT",
   "devDependencies": {
     "@types/jest": "23.3.9",
-    "@types/node": "10.12.2",
+    "@types/node": "10.12.3",
     "chokidar": "2.0.4",
     "clean-webpack-plugin": "0.1.19",
     "cors": "^2.8.5",
     "cross-env": "5.2.0",
-    "fork-ts-checker-webpack-plugin": "0.4.14",
+    "fork-ts-checker-webpack-plugin": "0.4.15",
     "html-loader": "0.5.5",
     "html-webpack-plugin": "3.2.0",
     "http-server": "^0.11.1",
@@ -70,7 +70,7 @@
   },
   "dependencies": {
     "gl-matrix": "2.8.1",
-    "pure3d": "2.3.0",
+    "pure3d": "2.3.2",
     "webfontloader": "1.6.28"
   }
 }
