@@ -12,7 +12,24 @@ lto = true
 
 [dependencies]
 wasm-bindgen = "0.2.27"
-web-sys = "0.3.4"
 js-sys = "0.3.4"
 arcball = "0.3.1"
 cgmath = "0.16.1"
+sodium-rust-push-pull = {git = "https://github.com/clinuxrulz/sodium-rust-push-pull"}
+
+[dependencies.web-sys]
+version = "0.3.4"
+features = [
+  'CanvasRenderingContext2d',
+  'CssStyleDeclaration',
+  'Document',
+  'DomRect',
+  'Element',
+  'EventTarget',
+  'HtmlCanvasElement',
+  'HtmlElement',
+  'MouseEvent',
+  'Node',
+  'Window',
+  'console',
+]

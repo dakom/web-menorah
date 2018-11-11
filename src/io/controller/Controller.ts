@@ -10,7 +10,9 @@ import { WebGlRenderer, getMatrixFromTrs } from 'pure3d';
 const domElement = document.getElementById("app");
 const hasPointer = (window as any).PointerEvent ? true : false;
 
-export const startController = (renderer:WebGlRenderer) => {
+export const startController = (renderer:WebGlRenderer) => (onMove:([p1, p2]:[Float32Array, Float32Array]) => void) => { 
+    const touch_start = new Float32Array(2);
+    const touch_move = new Float32Array(2);
 
     startTickPointer
         ({
@@ -19,18 +21,23 @@ export const startController = (renderer:WebGlRenderer) => {
             status: PointerEventStatus.START,
         })
         (evt => {
-            const start = evt.data as PointerEventData;
-            const onMove = (move:PointerEventData) => {
-            }
-            startMoveInput({onMove, onEnd: _ => {}});
+            touch_start[0] = evt.data.x;
+            touch_start[1] = evt.data.y; 
+            startMoveInput(data => {
+                touch_move[0] = data.x;
+                touch_move[1] = data.y;
+                onMove([touch_start, touch_move]);
+                touch_start[0] = data.x;
+                touch_start[1] = data.y;
+            })
         });
 }
 
-const startMoveInput = ({onMove, onEnd}: {onMove: (evt:PointerEventData) => void, onEnd: (evt:PointerEventData) => void}) => {
-   
+const startMoveInput = (onMove: (evt:PointerEventData) => void) => { 
     const stoppers = [];
 
     const stop = () => {
+        console.log("STOPPING");
         stoppers.forEach(fn => fn());
     }
 
@@ -52,7 +59,6 @@ const startMoveInput = ({onMove, onEnd}: {onMove: (evt:PointerEventData) => void
             status: PointerEventStatus.END,
         })
         (evt => {
-            onEnd(evt.data);
             stop();
         })
     );
