@@ -1,10 +1,10 @@
-import {GltfScene, GltfLightNode, NodeKind, LightKind, createTransform, GltfBridge, Camera, PerspectiveCameraSettings, CameraKind, getCameraProjection, createMat4} from "pure3d";
+import {GltfScene, gltf_updateStaticScene, GltfLightNode, NodeKind, LightKind, createTransform, GltfBridge, Camera, PerspectiveCameraSettings, CameraKind, getCameraProjection, createMat4} from "pure3d";
 import {mat4} from "gl-matrix";
 
 export const createScene = (bridge:GltfBridge) => {
     const scene = bridge.getOriginalScene(null) (0);
-    
-    return addLights(scene);
+
+    return gltf_updateStaticScene (addLights(scene));
 }
 
 const addLights = (scene:GltfScene):GltfScene => {
@@ -29,12 +29,12 @@ const addLights = (scene:GltfScene):GltfScene => {
     })
     return Object.assign({}, scene, {nodes:
         scene.nodes.concat([
-            makeDirectional({intensity: 5})
+            makeDirectional({intensity: 3}),
             //makeDirectional({ intensity: 7, rotation: [1,0,0,1] }),
             //makeDirectional({ intensity: 3, rotation: [0,0,0,1] }),
             //makeDirectional({ intensity: 3, rotation: [0,0,1,1] }),
             //makePoint({ intensity: 10, translation: [1,1,1] }),
-            //makePoint({ intensity: 3, translation: [0,0,1] }),
+            makePoint({ intensity: 10, translation: [-1,1,1] }),
         ])
     });
 }

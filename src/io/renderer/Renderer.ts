@@ -3,7 +3,12 @@ import {
     gltf_load
 } from "pure3d";
 
-export const loadRenderer = (path:string) => {
+export const getScreenSize = () => ({
+    width: window.innerWidth,
+    height: window.innerHeight
+})
+
+export const loadRenderer = async (path:string) => {
     const canvas = document.createElement("canvas");
     canvas.style.position = "absolute";
     canvas.style.top = "0px";
@@ -20,7 +25,7 @@ export const loadRenderer = (path:string) => {
     });
     renderer.gl.clearColor(0.2, 0.2, 0.2, 1.0);
 
-    const onResize = () => renderer.resize({ width: window.innerWidth, height: window.innerHeight });
+    const onResize = () => renderer.resize(getScreenSize());
     onResize();
     window.addEventListener("resize", onResize);
 

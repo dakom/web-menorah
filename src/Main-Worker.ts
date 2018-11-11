@@ -13,6 +13,7 @@ interface Streams {
 let wasmLib;
 let workersPending = 1;
 let streams:Streams;
+let screenSize:{width: number, height: number};
 
 /*
  Ticks are driven by requestAnimationFrame, even though we're in a worker
@@ -30,8 +31,16 @@ const onTick = now => {
 
 
         //const streams = wasmLib.start_game(now, onRender, onCollision);
-        const streams = wasmLib.start_game(now, onRender, onCollision);
+        streams = 
+            wasmLib.start_game(
+                now, 
+                screenSize.width,
+                screenSize.height,
+                onRender, 
+                onCollision
+            );
 
+        console.log(streams);
         /*
         streams = {
             sendUpdate: (now:number) => _streams.sendUpdate (now) (),
@@ -90,6 +99,7 @@ getWasm().then(_wasmLib => {
 
     switch(evt.data.cmd) {
         case WorkerCommand.WORKER_START:
+            screenSize = evt.data.screenSize;
             workersPending--;
             startIfReady();
             break;

@@ -69,7 +69,6 @@ const browserConfig = Object.assign({}, commonConfig, {
     ],
 });
 
-
 const mainWorkerConfig = Object.assign({}, commonConfig, {
     target: 'webworker',
     entry: path.resolve('./src/Main-Worker.ts'),

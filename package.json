@@ -42,7 +42,7 @@
   "license": "MIT",
   "devDependencies": {
     "@types/jest": "23.3.9",
-    "@types/node": "10.12.3",
+    "@types/node": "10.12.5",
     "chokidar": "2.0.4",
     "clean-webpack-plugin": "0.1.19",
     "cors": "^2.8.5",
@@ -70,7 +70,8 @@
   },
   "dependencies": {
     "gl-matrix": "2.8.1",
-    "pure3d": "2.3.2",
+    "input-senders": "1.0.2",
+    "pure3d": "2.4.0",
     "webfontloader": "1.6.28"
   }
 }
