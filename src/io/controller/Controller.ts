@@ -7,8 +7,8 @@ import {
 } from 'input-senders';
 import { WebGlRenderer, getMatrixFromTrs } from 'pure3d';
 
-const domElement = document.getElementById("app");
-const hasPointer = (window as any).PointerEvent ? true : false;
+const domElement = document.getElementById("canvas");
+const hasPointer = true; //always true w/ polyfill. Alternate: (window as any).PointerEvent ? true : false;
 
 export const startController = (renderer:WebGlRenderer) => (onMove:([p1, p2]:[Float32Array, Float32Array]) => void) => { 
     const touch_start = new Float32Array(2);

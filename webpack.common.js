@@ -27,6 +27,7 @@ const commonConfig = {
                 type: "webassembly/experimental",
             },
             { test: /\.html$/, loader: "html-loader" },
+            { test: /\.(glsl|vs|fs)$/, loader: 'ts-shader-loader'},
         ]
     },
     resolve: {

@@ -1,9 +1,12 @@
 //import MyWorker from 'worker-loader!./Main-Worker';
 import { getCompileFlags} from "io/utils/Utils";
 import {WorkerCommand,  MESSAGE, Renderable} from "io/types/Types";
-import {loadRenderer, getScreenSize} from "io/renderer/Renderer";
-import {createScene} from "io/scene/Scene";
+import {createRenderer, getScreenSize} from "io/renderer/Renderer";
+import {getScene} from "io/scene/Scene";
 import {startController} from "io/controller/Controller";
+import {getVideo} from "io/video/Video";
+import {gltf_load} from "pure3d";
+
 import { GltfBridge, GltfScene, gltf_updateAnimatedScene, gltf_updateStaticScene, gltf_createAnimator } from "pure3d";
 import {getWasm} from "./Wasm-Loader";
 
@@ -13,27 +16,29 @@ console.log(`%c Web Menorah ${buildVersion} (productionMode: ${isProduction})`, 
 
 
 const init = async () => {
-    const bridge = await loadRenderer("static/models/day1/menorah.gltf");
+    const renderer = createRenderer();
+    const gltf = await gltf_load({renderer, path: "static/models/day1/menorah.gltf"});
     const wasmLib = await getWasm();
-    let scene = createScene(bridge);
+    const video = await getVideo(renderer);
 
-    const updateScene = gltf_updateAnimatedScene(
-        gltf_createAnimator(bridge.getData().animations) ({loop: true})
-    )
+    const scene = getScene (renderer) (gltf);
+    
     //const ptr = wasmLib.run(createScene(bridge), bridge.renderScene, console.log);
 
-    const camera_ptr = wasmLib.create_camera(bridge.renderer.canvas.clientWidth, bridge.renderer.canvas.clientHeight);
-    scene.camera.view = wasmLib.get_camera_view(camera_ptr);
+    const camera_ptr = wasmLib.create_camera(renderer.canvas.clientWidth, renderer.canvas.clientHeight);
+    scene.setCamera(wasmLib.get_camera_view(camera_ptr));
 
-    startController(bridge.renderer) 
+    startController(renderer) 
         (([p1, p2]) => {
-            scene.camera.view = wasmLib.update_camera(camera_ptr, p1, p2);
+            scene.setCamera(wasmLib.update_camera(camera_ptr, p1, p2));
         });
 
     const onTick = now => {
-        //scene = gltf_updateStaticScene (scene);
-        scene = updateScene(now) (scene);
-        bridge.renderScene(scene);
+        renderer.glToggle(renderer.gl.DEPTH_TEST) (false);
+        renderer.glToggle(renderer.gl.CULL_FACE) (false);
+
+        video.render(now);
+        scene.render(now);
         requestAnimationFrame(onTick);
     } 
     requestAnimationFrame(onTick);

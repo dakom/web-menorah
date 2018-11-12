@@ -1,12 +1,25 @@
-import {GltfScene, gltf_updateStaticScene, GltfLightNode, NodeKind, LightKind, createTransform, GltfBridge, Camera, PerspectiveCameraSettings, CameraKind, getCameraProjection, createMat4} from "pure3d";
+import {GltfScene, gltf_updateAnimatedScene, gltf_createAnimator, WebGlRenderer, gltf_updateStaticScene, GltfLightNode, NodeKind, LightKind, createTransform, GltfBridge, Camera, PerspectiveCameraSettings, CameraKind, getCameraProjection, createMat4} from "pure3d";
 import {mat4} from "gl-matrix";
 
-export const createScene = (bridge:GltfBridge) => {
-    const scene = bridge.getOriginalScene(null) (0);
+export const getScene = (renderer:WebGlRenderer) => (gltf:GltfBridge) => {
+    let scene = gltf.getOriginalScene(null) (0);
 
-    return gltf_updateStaticScene (addLights(scene));
+    scene = gltf_updateStaticScene (addLights(scene));
+    const updateScene = gltf_updateAnimatedScene(
+        gltf_createAnimator(gltf.getData().animations) ({loop: true})
+    );
+
+    return {
+        render: now => {
+            scene = updateScene(now) (scene);
+            gltf.renderScene(scene);
+        },
+
+        setCamera: view => {
+            scene.camera.view = view
+        }
+    }
 }
-
 const addLights = (scene:GltfScene):GltfScene => {
     const makeDirectional = ({intensity, rotation}:{intensity:number, rotation?:Array<number>}):GltfLightNode => ({
         kind: NodeKind.LIGHT,
@@ -37,29 +50,4 @@ const addLights = (scene:GltfScene):GltfScene => {
             makePoint({ intensity: 10, translation: [-1,1,1] }),
         ])
     });
-}
-
-const createCamera = ():Camera => {
-    const settings:PerspectiveCameraSettings = {
-        kind: CameraKind.PERSPECTIVE,
-        yfov: 45.0 * Math.PI / 180,
-        aspectRatio: window.innerWidth / window.innerHeight,
-        znear: .01,
-        zfar: 1000
-    }
-
-    const position = Float64Array.from([0,0,5]);
-    const cameraLook = Float64Array.from([0,0,0]);
-    const cameraUp = Float64Array.from([0,1,0]);
-   
-    const projection = getCameraProjection(settings); 
-
-    const view = mat4.lookAt(createMat4() as any, position as any, cameraLook as any,cameraUp as any);
-
-    return {
-        settings,
-        position,
-        view,
-        projection
-    }
 }
