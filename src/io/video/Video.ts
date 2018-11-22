@@ -15,7 +15,8 @@ export interface VideoElement {
     clipSpace:Float32Array;
 }
 export const getVideo = async (renderer:WebGlRenderer) => {
-    const video = document.createElement('video');
+    //const video = document.createElement('video');
+    const video = document.getElementById('video') as HTMLVideoElement;
     video.style.position = "absolute";
     video.style.width = "100vw";
     video.style.height = "100vh";
@@ -36,11 +37,11 @@ export const getVideo = async (renderer:WebGlRenderer) => {
         video.addEventListener('playing',() => {
             resolve({
                 stream,
-                render: createVideoRenderer(renderer) (video)
+                //render: createVideoRenderer(renderer) (video)
             })
         })
     ) as Promise<{
-        render: (now:DOMHighResTimeStamp) => void;
+        //render: (now:DOMHighResTimeStamp) => void;
         stream: MediaStream;
     }>;
     
@@ -56,8 +57,6 @@ const createVideoRenderer = (renderer:WebGlRenderer) => (video:HTMLVideoElement)
     console.log("Setup video renderer");
     
     const {gl, buffers} = renderer;
-
-
 
     //This must come first here since we're also working with gltf
     renderer.attributes.globalLocations.add("a_Vertex");
