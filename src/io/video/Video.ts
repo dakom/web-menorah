@@ -29,7 +29,7 @@ export const getVideo = async (renderer:WebGlRenderer) => {
 
     const stream = await navigator.mediaDevices.getUserMedia({
         audio: false,
-        video: true
+        video: { facingMode: "environment" }
     });
 
 
